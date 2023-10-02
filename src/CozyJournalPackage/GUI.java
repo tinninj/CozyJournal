@@ -68,9 +68,9 @@ public class GUI implements ActionListener{
 		moodPanel.setBounds(0,600,780,50);
 		
 		JPanel navigationPanel = new JPanel();
-		navigationPanel.setBackground(new Color(0,0,0));
-		navigationPanel.setBorder(BorderFactory.createLineBorder(new Color(143,96,70,255)));
-		navigationPanel.setBounds(0,0,550,340);
+		navigationPanel.setBackground(new Color(252,252,202,255));
+		//navigationPanel.setBorder(BorderFactory.createLineBorder(new Color(143,0,70,255)));
+		navigationPanel.setBounds(0,650,780,350);
 	
 
 		
