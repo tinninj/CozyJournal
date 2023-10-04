@@ -95,6 +95,8 @@ public class GUI {
         rightPanel.setPreferredSize(new Dimension(400, 400));
 
         return page;
+        
+        
     }
 
     public static void main(String[] args) {
