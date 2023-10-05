@@ -7,10 +7,13 @@ import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class GUI {
     private JFrame frame;
@@ -94,10 +97,55 @@ public class GUI {
         leftPanel.setPreferredSize(new Dimension(200, 400));
         rightPanel.setPreferredSize(new Dimension(400, 400));
 
+		//add textbox and title to Journal
+		JTextArea textArea = new JTextArea(10, 30); // 10 rows, 30 columns
+    	JTextField titleField = new JTextField(20);
+
+		//Add save Button
+		JButton saveButton = new JButton("Save");
+
+		//action listener for the save button
+		saveButton.addActionListener(e -> {
+			String text = textArea.getText();
+			String titleText = titleField.getText();
+
+			//Get current date
+			String date = java.time.LocalDate.now().toString();
+
+			//TODO: need to save this to an excel spreadsheet
+
+			// Clear the text area and title field after saving
+			textArea.setText("");
+			titleField.setText("");
+		});
+
+
+		//Add text box, title and save button to right panel
+		rightPanel.add(new JLabel("Title: "));
+    	rightPanel.add(titleField);
+    	rightPanel.add(new JLabel("Entry: "));
+    	rightPanel.add(textArea);
+    	rightPanel.add(saveButton);
+
         return page;
-        
-        
     }
+
+	/*private JPanel createCalendarPage(String title){
+		JPanel page = createPage(title);
+		JPanel calendarPanel = new JPanel();
+
+		//create JCalendar
+
+		JCalendar calendar = new JCalendar();
+
+		//Add calendar to calendarPanel
+		calendarPanel.add(calendar);
+
+		//Add caledarPanel to calendarPage
+		page.add(calendarPanel, BorderLayout.CENTER);
+
+		return page;
+	}*/
 
     public static void main(String[] args) {
         new GUI();
