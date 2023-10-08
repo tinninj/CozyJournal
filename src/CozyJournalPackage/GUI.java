@@ -121,7 +121,7 @@ public class GUI {
         loadJournalEntries(journalTextArea);
         
         JScrollPane textScrollPane = new JScrollPane(journalTextArea);
-        textScrollPane.setPreferredSize(new Dimension(600, 300)); // Adjust the size as needed
+        textScrollPane.setPreferredSize(new Dimension(300, 300)); // Adjust the size as needed
 
         leftPanel.add(textScrollPane); // Add the text area to the left panel
 
