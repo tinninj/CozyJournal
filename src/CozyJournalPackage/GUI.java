@@ -72,26 +72,32 @@ public class GUI {
     }
 
     private JPanel createPage(String title) {
+    	//creates the different panels displayed on each page
         JPanel page = new JPanel();
         JPanel titlePanel = new JPanel();
         JPanel centerPanel = new JPanel();
 
+        //creates the layout for the page
         page.setLayout(new BorderLayout());
+        //sets location of the panels
         page.add(titlePanel, BorderLayout.NORTH);
         page.add(centerPanel, BorderLayout.CENTER);
-
+        
+        //attributes of the title panel
         titlePanel.setPreferredSize(new Dimension(780, 50));
 		titlePanel.setBackground(new Color(252, 252, 202));
 		titlePanel.setBorder(BorderFactory.createLineBorder(new Color(143, 96, 70)));
-
+		
+		//sets background of the center panel
         centerPanel.setBackground(new Color(252, 252, 202));
-
+        
+        //creates the title label and it's attributes
         JLabel titleLabel = new JLabel(title);
         titleLabel.setForeground(new Color(143, 96, 70));
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titlePanel.add(titleLabel);
         
-        //Add latest journal entry to main page
+        //Add latest journal entry to main page only
         if (title.equals("Home")){
         latestJournalEntryLabel = new JLabel("Latest Journal Entry:");
         centerPanel.add(latestJournalEntryLabel);
@@ -101,6 +107,7 @@ public class GUI {
     }
 
 	
+    //For the Journal Page's unique features
     private JPanel createJournalPage(String title) {
         JPanel page = createPage(title);
         JPanel centerPanel = new JPanel();
@@ -118,7 +125,8 @@ public class GUI {
         // Set background Color
         leftPanel.setBackground(new Color(252, 252, 202));
         rightPanel.setBackground(new Color(252, 252, 202));
-
+        
+        //set border of panel and color
         leftPanel.setBorder(BorderFactory.createLineBorder(new Color(143, 96, 70)));
         rightPanel.setBorder(BorderFactory.createLineBorder(new Color(143, 96, 70)));
 
@@ -145,8 +153,8 @@ public class GUI {
         // Add save Button
         JButton saveButton = new JButton("Save");
 
-        // action listener for the save button
-     // action listener for the save button
+        
+        //action listener for the save button
         saveButton.addActionListener(e -> {
             String text = textArea.getText();
             String titleText = titleField.getText();
