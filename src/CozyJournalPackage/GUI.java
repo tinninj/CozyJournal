@@ -1,5 +1,7 @@
 package CozyJournalPackage;
 
+import java.util.Date;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,15 +15,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream; 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.sl.usermodel.Sheet;
@@ -31,9 +33,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook; 
 
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
+
+
 public class GUI {
     private JFrame frame;
-    private DefaultTableModel tableModel;
+    private JLabel latestJournalEntryLabel;
 
     public GUI() {
 		//Creates frame and sets dimensions/attributes
@@ -60,6 +66,7 @@ public class GUI {
         navigationPane.addTab("Journal", journalPage);
         navigationPane.addTab("Calendar", calendarPage);
         navigationPane.addTab("Analytics", analyticsPage);
+        
 
         
     }
@@ -83,6 +90,12 @@ public class GUI {
         titleLabel.setForeground(new Color(143, 96, 70));
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titlePanel.add(titleLabel);
+        
+        //Add latest journal entry to main page
+        if (title.equals("Home")){
+        latestJournalEntryLabel = new JLabel("Latest Journal Entry:");
+        centerPanel.add(latestJournalEntryLabel);
+        }
 
         return page;
     }
@@ -204,6 +217,12 @@ public class GUI {
 
                 // Append the data to the JTextArea
                 journalTextArea.append("Date: " + date + ", Title: " + title + ", Text: " + text + "\n");
+                
+             // Update the latest entry with the current row's data
+                String latestEntry = "Date: " + date + ", Title: " + title + ", Text: " + text;
+                
+                // Set the text of the latestJournalEntryLabel with the latest entry
+                latestJournalEntryLabel.setText("Latest Journal Entry: " + latestEntry);
 
                 //CAN BE REMOVED.TESTING IF INFORMATION IS ADDED TO JTextArea
                 System.out.println("Date: " + date + ", Title: " + title + ", Text: " + text);
@@ -216,22 +235,24 @@ public class GUI {
     }
 
 
-	/*private JPanel createCalendarPage(String title){
-		JPanel page = createPage(title);
-		JPanel calendarPanel = new JPanel();
+    private JPanel createCalendarPage(String title){
+    	JPanel page = createPage(title);
+    	JPanel calendarPanel = new JPanel();
 
-		//create JCalendar
+    	//create JCalendar
 
-		JCalendar calendar = new JCalendar();
+    	JCalendar calendar = new JCalendar();
 
-		//Add calendar to calendarPanel
-		calendarPanel.add(calendar);
+    	//Add calendar to calendarPanel
+    	calendarPanel.add(calendar);
 
-		//Add caledarPanel to calendarPage
-		page.add(calendarPanel, BorderLayout.CENTER);
+    	//Add caledarPanel to calendarPage
+    	page.add(calendarPanel, BorderLayout.CENTER);
 
-		return page;
-	}*/
+    	return page;
+    }
+	
+    
 
     public static void main(String[] args) {
         new GUI();
