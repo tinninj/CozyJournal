@@ -76,6 +76,7 @@ public class GUI {
         JPanel page = new JPanel();
         JPanel titlePanel = new JPanel();
         JPanel centerPanel = new JPanel();
+	JPanel upload_panel = new JPanel(); // D.C added
 
         //creates the layout for the page
         page.setLayout(new BorderLayout());
@@ -204,6 +205,22 @@ public class GUI {
         rightPanel.add(new JLabel("Entry: "));
         rightPanel.add(textArea);
         rightPanel.add(saveButton);
+	
+	// D.Cotton Agile Week 2 Work
+        upload_panel.setBackground(new Color(139, 69, 19));
+        upload_panel.setPreferredSize(new Dimension(150, 150)); // Adjust the size
+         // creates the a title for the panel
+        JLabel titleLabel = new JLabel("Upload Photo");
+        upload_panel.add(titleLabel);
+        centerPanel.add(upload_panel); // add the panel to the center panel in the journal entry
+        String [] moods = {"Happy", "Sad", "Angry", "Stressed", "Nervous", "Relax"}; // create a list of the moods
+        JComboBox<String> comboBox = new JComboBox<>(moods); // created a drop down tab for users to select the moods
+        // Set the position and size of the JComboBox
+        comboBox.setPreferredSize(new Dimension(150, 150)); // Adjust the size I tried to 
+        
+        // Add the JComboBox to the center panel 
+        centerPanel.add(comboBox);
+
 
         return page;
     }
