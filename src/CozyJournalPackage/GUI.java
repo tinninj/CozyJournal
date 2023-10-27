@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -76,7 +77,7 @@ public class GUI {
         JPanel page = new JPanel();
         JPanel titlePanel = new JPanel();
         JPanel centerPanel = new JPanel();
-	JPanel upload_panel = new JPanel(); // D.C added
+	
 
         //creates the layout for the page
         page.setLayout(new BorderLayout());
@@ -114,6 +115,7 @@ public class GUI {
         JPanel centerPanel = new JPanel();
         JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
+	JPanel upload_panel = new JPanel(); // D.C added
 
         // SetLayout: 1 row, 2 columns
         centerPanel.setLayout(new GridLayout(1, 2));
