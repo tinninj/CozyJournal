@@ -1,4 +1,4 @@
-package CozyJournalPackage;
+package CozyJournal;
 
 public class CozyJournalMain {
 
