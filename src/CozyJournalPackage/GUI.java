@@ -63,7 +63,7 @@ public class GUI {
         Image icon = Toolkit.getDefaultToolkit().getImage("C:\\Users\\badki\\Documents\\simmons_classes\\software_engineering\\final\\CozyJournal-main\\src\\CozyJournalPackage\\images\\logo_dark.png");
         frame.setIconImage(icon);
     }
-
+    
     private JPanel createPage(String title) {
         JPanel page = new JPanel();
         JPanel titlePanel = new JPanel();
