@@ -344,7 +344,10 @@ public class GUI {
     }*/
 
 
-
+    ///I think that the problem with the image panel
+    ///is that the panel was not created properly
+    ///Once the imagePanel is created than you should
+    //be able to add the image correctly
     
     // image panel class
     public class ImagePanel extends JPanel {
