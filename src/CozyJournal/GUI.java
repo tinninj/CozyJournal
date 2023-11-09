@@ -281,6 +281,18 @@ public class GUI {
         	// the duplicate's path in a cell in the spreadsheet																		 //
         	// changing the image would overwrite the previously choosen image 															 //
     		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     
+        
+        //JT: The imagePanel current is displaying on top of the 
+        //upload panel so that the upload button can no longer be seen
+        //Next programmer should move the image so that it doesn't cover
+        //the button
+        
+        
+        // JLabel to display the uploaded image
+        JLabel imageLabel = new JLabel();
+        uploadPanel.add(imageLabel);
+        
         final JFileChooser fc = new JFileChooser();
         // action listener for upload image button
         uploadButton.addActionListener(e -> {
@@ -291,10 +303,31 @@ public class GUI {
         			File file = fc.getSelectedFile();
         			//String imgPath = file.getAbsolutePath();
         			try {
-        				ImagePanel imagePanel = new ImagePanel();
-        				BufferedImage image = ImageIO.read(file);
-        				imagePanel.setImage(image);
-        				uploadPanel.add(imagePanel);
+        				//ImagePanel imagePanel = new ImagePanel();
+        				BufferedImage originalImage = ImageIO.read(file);
+        				
+        				 // width and height for the resized image
+                        int desiredWidth = 150; // Adjustable
+                        int desiredHeight = 150; // Adjustable
+
+                        // Resize the original image
+                        Image resizedImage = originalImage.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
+
+                     // Set the resized image to the JLabel
+                        imageLabel.setIcon(new ImageIcon(resizedImage));
+        						
+        		
+                        //clear uploadPanel
+        				uploadPanel.removeAll();
+        				
+        				// Add some padding above the image using EmptyBorder
+                        imageLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+        				
+                        
+        				//add image to uploadPanel
+        				uploadPanel.add(imageLabel);
+        				
+        				// Revalidate and repaint to update the display
         				uploadPanel.revalidate();
         				uploadPanel.repaint();
         			}
@@ -344,26 +377,8 @@ public class GUI {
     }*/
 
 
-    ///I think that the problem with the image panel
-    ///is that the panel was not created properly
-    ///Once the imagePanel is created than you should
-    //be able to add the image correctly
     
-    // image panel class
-    public class ImagePanel extends JPanel {
-    	BufferedImage image = null;
-    	public ImagePanel() {
-    	}
-    	@Override
-	    public void paintComponent(Graphics g) {
-	    	super.paintComponent(g);
-	    	g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
-	    }
-    	public void setImage(BufferedImage image) {
-    		this.image = image;
-    		repaint();
-    	}
-    }
+
 
 	/*private JPanel createCalendarPage(String title){
 		JPanel page = createPage(title);
