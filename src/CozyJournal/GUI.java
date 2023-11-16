@@ -295,47 +295,41 @@ public class GUI {
         
         final JFileChooser fc = new JFileChooser();
         // action listener for upload image button
+        
         uploadButton.addActionListener(e -> {
-        	// handle button action
-        	if(e.getSource() == uploadButton) {
-        		int retVal = fc.showOpenDialog(null);
-        		if(retVal == JFileChooser.APPROVE_OPTION) {
-        			File file = fc.getSelectedFile();
-        			//String imgPath = file.getAbsolutePath();
-        			try {
-        				//ImagePanel imagePanel = new ImagePanel();
-        				BufferedImage originalImage = ImageIO.read(file);
-        				
-        				 // width and height for the resized image
+            // handle button action
+            if (e.getSource() == uploadButton) {
+                int retVal = fc.showOpenDialog(null);
+                if (retVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    try {
+                        BufferedImage originalImage = ImageIO.read(file);
+
+                        // width and height for the resized image
                         int desiredWidth = 150; // Adjustable
                         int desiredHeight = 150; // Adjustable
 
                         // Resize the original image
                         Image resizedImage = originalImage.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
 
-                     // Set the resized image to the JLabel
+                        // Set the resized image to the existing image label
                         imageLabel.setIcon(new ImageIcon(resizedImage));
-        						
-        		
-                        //clear uploadPanel
-        				uploadPanel.removeAll();
-        				
-        				// Add some padding above the image using EmptyBorder
+
+                        // Add some padding above the image using EmptyBorder
                         imageLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
-        				
-                        
-        				//add image to uploadPanel
-        				uploadPanel.add(imageLabel);
-        				
-        				// Revalidate and repaint to update the display
-        				uploadPanel.revalidate();
-        				uploadPanel.repaint();
-        			}
-        			catch(IOException ex) {
-        				ex.printStackTrace();
-        			}
-        		}
-        }});
+
+                        // Revalidate and repaint to update the display
+                        uploadPanel.revalidate();
+                        uploadPanel.repaint();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+
+      
 
         return page;
     }
@@ -399,5 +393,7 @@ public class GUI {
 
     public static void main(String[] args) {
         new GUI();
+        
+       
     }
 }
