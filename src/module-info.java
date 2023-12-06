@@ -9,4 +9,5 @@ module CozyJournal {
 	requires org.apache.poi.poi;
 	requires org.apache.poi.ooxml;
 	requires jcalendar;
+	//requires junit;
 }

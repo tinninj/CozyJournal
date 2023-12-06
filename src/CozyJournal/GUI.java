@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream; 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Scanner;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -30,10 +31,11 @@ public class GUI {
     private JFrame frame;
     private JLabel latestJournalEntryLabel;
     
-    
-    ///This is a global variable so that it can be called by multiple methods
-    //Variable for path for images that are added into the journal page
-    private String uploadedImagePath = null;
+    // Global variables
+    // Variable for storing the path of images uploaded to the journal page
+    private String uploadedImagePath  = null;
+    //variable for the image uploaded into the journal
+    private JLabel uploadedimageLabel = new JLabel();
     
     // colors --AP
     private Color bkgYellow = new Color(252, 252, 202);
@@ -55,18 +57,22 @@ public class GUI {
 		// Creates pages of the app
         JPanel mainPage = createPage("Home");
         JPanel journalPage = createJournalPage("Journal");
-        JPanel calendarPage = createPage("Calendar");
-        JPanel analyticsPage = createPage("Analytics");
+        
+      //Calendar Page and Analytics page commented out to remove it from the application -- JT
+       // JPanel calendarPage = createPage("Calendar");
+       // JPanel analyticsPage = createPage("Analytics");
 
         //Add pages to navigation 
 		navigationPane.addTab("Home", mainPage);
         navigationPane.addTab("Journal", journalPage);
-        navigationPane.addTab("Calendar", calendarPage);
-        navigationPane.addTab("Analytics", analyticsPage);
         
-        //add logo to GUI
-        Image icon = Toolkit.getDefaultToolkit().getImage("images/logo_dark.png");
-        frame.setIconImage(icon);
+        //Calendar Page and Analytics page commented out to remove it from the application -- JT
+        //navigationPane.addTab("Calendar", calendarPage);
+        //navigationPane.addTab("Analytics", analyticsPage);
+        
+        // sets icon
+        Image logo = Toolkit.getDefaultToolkit().getImage("images/logo_dark.png");
+        frame.setIconImage(logo);
     }
     
     private JPanel createPage(String title) {
@@ -116,7 +122,7 @@ public class GUI {
                 String entryContent = row.getCell(2).getStringCellValue();
                 JLabel latestJournalEntryContent = new JLabel("Date: " + entryDate + " Title: " + entryTitle + " Entry: " + entryContent);
                 
-                // add entry as a JLabel on homepage
+                // add entry as a JLabel on HomePage
                 entryPanel.add(latestJournalEntryContent);
         	}
         	catch (IOException ex) {
@@ -139,8 +145,12 @@ public class GUI {
         JPanel entryPanel = new JPanel();
         JPanel titlePanel = new JPanel(); // also includes mood --AP
         JPanel journalTextPanel = new JPanel(); // main text box --AP
-        JPanel uploadPanel = new JPanel();
-
+        JPanel uploadPanel = new JPanel(); // contains the uploadButton and image panels
+        JPanel uploadButtonPanel = new JPanel();
+        JPanel uploadedImagePanel = new JPanel();
+        //JPanel uploadButtonPanel = new JPanel(); // contains only the upload image button --AP
+        //JPanel imagePanel = new JPanel(); // contains the uploaded image
+        
         // SetLayout: 1 row, 2 columns
         centerPanel.setLayout(new GridLayout(1, 2));
         centerPanel.add(leftPanel);
@@ -192,6 +202,13 @@ public class GUI {
         JTextArea textArea = new JTextArea(7, 35); // 7 rows, 40 columns
         textArea.setLineWrap(true); // text wrapping added by AP
         JTextField titleField = new JTextField(20);
+        
+        // mood selection list
+        String [] moods = {"","Happy", "Sad", "Angry", "Stressed", "Nervous", "Relax"};
+        // mood selection drop down
+        JComboBox<String> comboBox = new JComboBox<>(moods);
+        // Set the position and size of the JComboBox
+        comboBox.setPreferredSize(new Dimension(300, 20)); // edited by AP
 
         // Add save Button
         JButton saveButton = new JButton("Save");
@@ -222,13 +239,30 @@ public class GUI {
                 Cell textCell = row.createCell(2);
                 textCell.setCellValue(text);
                 
-                /////JT: This should added the image path to the excel spreadsheet. 
-                //It needs to be pulled from the spreadsheet to display the correct image.
-                ////
-                ////
-                //add file path to the spreadsheet
-                Cell imagePathCell = row.createCell(3);
-                imagePathCell.setCellValue(uploadedImagePath);
+                ////////////////////////////////////// SAVE IMAGE - AP //////////////////////////////////////
+                		// image, save it to source_images, and save this new path to the cell in the spreadsheet // 
+                if(uploadedImagePath != null) {
+	                Cell imagePathCell = row.createCell(3);
+	                // create duplicate of selected image and save it to source_images folder
+	                File originalPath = new File(uploadedImagePath);
+	                BufferedImage dupeImage = ImageIO.read(originalPath);
+	                
+	                // datetime value used as file name for duplicate image (allows for unique file names
+	                String dupeImagePath = "images/" + System.currentTimeMillis();
+	                
+	                // save duplicate image in source_image folder
+	                ImageIO.write(dupeImage, "png", new File(dupeImagePath));
+	                
+	                imagePathCell.setCellValue(dupeImagePath);
+                }
+                
+                // save mood to the database
+                String mood = comboBox.getEditor().getItem().toString();
+                // create cell for storing the mood
+                Cell moodCell = row.createCell(4);
+                // add text from combo box to cell
+                moodCell.setCellValue(mood);
+                
 
                 // Write the workbook back to the file
                 FileOutputStream fos = new FileOutputStream("journal_entries.xlsx");
@@ -239,6 +273,10 @@ public class GUI {
                 // Clear the text area and title field after saving
                 textArea.setText("");
                 titleField.setText("");
+                comboBox.setSelectedItem("");
+                
+              //clear image displayed
+                GUI.this.uploadedimageLabel.setIcon(null);
                 uploadedImagePath = null;
 
                 // Append only the new entry to the JTextArea
@@ -248,13 +286,6 @@ public class GUI {
                 ex.printStackTrace();
             }
         });
-        
-        // mood selection list
-        String [] moods = {"Happy", "Sad", "Angry", "Stressed", "Nervous", "Relax"};
-        // mood selection drop down
-        JComboBox<String> comboBox = new JComboBox<>(moods);
-        // Set the position and size of the JComboBox
-        comboBox.setPreferredSize(new Dimension(300, 20)); // edited by AP
 
         // Add text box, title, and save button to right panel
         titlePanel.add(new JLabel("Title: "));
@@ -265,72 +296,76 @@ public class GUI {
         journalTextPanel.add(textArea);
         journalTextPanel.add(saveButton);
 
+        ////////// Grid Bag Layout of upload panel //////////
         // image upload panel
         uploadPanel.setBackground(new Color(139, 69, 19));
         uploadPanel.setPreferredSize(new Dimension(150, 150)); // Adjust the size
-        // upload image button (opens files) -- AP
+        uploadPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        
+        // constraints for button panel
+        c.weightx = 0.5;
+        c.fill = GridBagConstraints.VERTICAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        uploadButtonPanel.setBackground(new Color(139, 69, 19));
+        uploadPanel.add(uploadButtonPanel, c);
+        
+        // add button to panel 
         JButton uploadButton = new JButton("Upload Image");
-        uploadPanel.add(uploadButton);
+        uploadButtonPanel.add(uploadButton);
         
+        // constraints for uploaded image panel 
+        c.ipady = 150;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.gridx = 0;
+        c.gridy = 1;
+        uploadedImagePanel.setBackground(new Color(139, 69, 19));
+        uploadPanel.add(uploadedImagePanel, c);
         
-        // file chooser -- AP
-        	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        	// NOTE: currently choosing a second image does not replace the first and the images are displayed too small				 //
-        	// also the picture isn't saved to the database 																			 // 
-        	// saving it to the database could involve creating a duplicate image in a specified folder (within the project) and saving  // 
-        	// the duplicate's path in a cell in the spreadsheet																		 //
-        	// changing the image would overwrite the previously choosen image 															 //
-    		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     
-        
-        //JT: The imagePanel current is displaying on top of the 
-        //upload panel so that the upload button can no longer be seen
-        //Next programmer should move the image so that it doesn't cover
-        //the button
         
         
         // JLabel to display the uploaded image
-        JLabel imageLabel = new JLabel();
-        uploadPanel.add(imageLabel);
-        
+        uploadedImagePanel.add(uploadedimageLabel);
+       
         final JFileChooser fc = new JFileChooser();
-        // action listener for upload image button
         
+        // action listener for upload image button
         uploadButton.addActionListener(e -> {
-            // handle button action
-            if (e.getSource() == uploadButton) {
-                int retVal = fc.showOpenDialog(null);
-                if (retVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-                    try {
-                        BufferedImage originalImage = ImageIO.read(file);
-
-                        // width and height for the resized image
-                        int desiredWidth = 150; // Adjustable
-                        int desiredHeight = 150; // Adjustable
-
-                        // Resize the original image
-                        Image resizedImage = originalImage.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
-
-                        // Set the resized image to the existing image label
-                        imageLabel.setIcon(new ImageIcon(resizedImage));
-
-                        // Add some padding above the image using EmptyBorder
-                        imageLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
-
-                        // Revalidate and repaint to update the display
-                        uploadPanel.revalidate();
-                        uploadPanel.repaint();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-
-
-      
-
+        	// handle button action
+        	if(e.getSource() == uploadButton) {
+        		int retVal = fc.showOpenDialog(null);
+        		if(retVal == JFileChooser.APPROVE_OPTION) {
+        			File file = fc.getSelectedFile();
+        			
+        			try {
+        				
+        				BufferedImage originalImage = ImageIO.read(file);
+        				
+        				// resize image
+        				int desiredWidth = 150; // adjustable
+        				int desiredHeight = 150; // adjustable 
+        				
+        				Image resizedImage = originalImage.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
+        				
+        				// set the resized image to the existing image label
+        				uploadedimageLabel.setIcon(new ImageIcon(resizedImage));
+        				
+        				
+        				// update display
+        				uploadedImagePanel.revalidate();
+        				uploadedImagePanel.repaint();
+        				
+        				// store image path in uploadedImagePath global variable
+        				uploadedImagePath = file.getPath();
+        				
+        			}
+        			catch(IOException ex) {
+        				ex.printStackTrace();
+        			}
+        		}
+        }});
         return page;
     }
 
@@ -349,8 +384,6 @@ public class GUI {
                 // Append the data to the JTextArea
                 journalTextArea.append("Date: " + date + ", Title: " + title + ", Text: " + text + "\n");
 
-                //CAN BE REMOVED.TESTING IF INFORMATION IS ADDED TO JTextArea
-                System.out.println("Date: " + date + ", Title: " + title + ", Text: " + text);
             }
 
             fis.close();
@@ -358,21 +391,6 @@ public class GUI {
             e.printStackTrace();
         }
     }
-   
-    // This method is supposed to save the image into a folder so it can be seen on multiple machines
-    //It is not finished so the next programmer needs to finish the method so that the uploaded image is added to the
-    // "images" folder and that the file path is also saved in the excel spreadsheet
-  /*  private void saveImageToFolder(File uploadedImage) {
-        String imageFileName = "image_" + System.currentTimeMillis(); // Generate a unique file name
-        String destinationDirectory = "images";
-
-        
-
-    }*/
-
-
-    
-
 
 	/*private JPanel createCalendarPage(String title){
 		JPanel page = createPage(title);
@@ -393,7 +411,5 @@ public class GUI {
 
     public static void main(String[] args) {
         new GUI();
-        
-       
     }
 }
